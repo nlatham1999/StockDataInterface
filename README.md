@@ -16,4 +16,18 @@ current functionalities:
 
   -getPreviousClose(Symbol) - takes in the stock symbol and returns the previous close price. If no data is available or if the stock has not been initialized then None is returned 
 
+  -getOpen(Symbol) - takes in the stock symbol and returns the open price. If no data is available or if the stock has not been initialized then None is returned 
+
+  -getDayRange(Symbol) - takes in the stock symbol and returns the day's high and low as an array. If no data is available or if the stock has not been initialized then None is returned 
+
+  -getDayLow(Symbol) - takes in the stock symbol and returns the day's low. If no data is available or if the stock has not been initialized then None is returned 
+
+  -getDayHigh(Symbol) - takes in the stock symbol and returns the day's high. If no data is available or if the stock has not been initialized then None is returned 
+
+  -get52WeekRange(Symbol) - takes in the stock symbol and returns the 52 week's high and low as an array. If no data is available or if the stock has not been initialized then None is returned 
+
+  -get52WeekLow(Symbol) - takes in the stock symbol and returns the 52 week's low. If no data is available or if the stock has not been initialized then None is returned 
+
+  -get52WeekHigh(Symbol) - takes in the stock symbol and returns the 52 week's high. If no data is available or if the stock has not been initialized then None is returned
+
   

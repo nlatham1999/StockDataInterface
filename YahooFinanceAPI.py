@@ -1,3 +1,7 @@
+#Nick Latham
+#6/21/2020
+#An API for Yahoo Finance
+
 import urllib3
 from bs4 import BeautifulSoup
 import lxml
@@ -137,8 +141,134 @@ class YahooFinanceAPI:
             except:
                 YahooFinanceAPI.message("previous close data not currently available")
                 return None
-        YahooFinanceAPI.message(sym + " Previous close for " + sym + ": " + str(previousClose))
+        YahooFinanceAPI.message(sym + " previous close: " + str(previousClose))
         return previousClose
+
+    #gets the opening price
+    def getOpen(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        openPrice = stock.openPrice
+        if(openPrice is None):
+            try:
+                xml = stock.xml.find_all("span", {"data-reactid" : "103"})
+                openPrice = float(xml[0].string.strip())
+                stock.openPrice = openPrice
+            except:
+                YahooFinanceAPI.message("Open price data not currently available")
+                return None
+        YahooFinanceAPI.message(sym + " open: " + str(openPrice))
+        return openPrice
+
+    #gets the day's range
+    def  getDayRange(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        dayRange = stock.dayRange
+        if(dayRange is None):
+            high = ""
+            low = ""
+            try:
+                xml = stock.xml.find_all("td", {"data-reactid" : "117"})
+                temp = xml[0].string.strip()
+                i = 0
+                while(i < len(temp) and temp[i] != " "):
+                    low += temp[i]
+                    i += 1
+                i += 3
+                while(i < len(temp)):
+                    high += temp[i]
+                    i+= 1
+                dayRange = [float(low), float(high)]
+                stock.dayRange = dayRange
+            except:
+                YahooFinanceAPI.message("day range data not currently available")
+                return None
+        return dayRange
+
+    #gets the day's low
+    def getDayLow(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        if(stock.dayRange is None):
+            YahooFinanceAPI.getDayRange(sym)
+            stock = YahooFinanceAPI.getInitializedStock(sym)
+            if(stock is None or stock.dayRange is None):
+                return None
+        YahooFinanceAPI.message(sym + " day low: " + str(stock.dayRange[0]))  
+        return stock.dayRange[0]
+
+    #gets the day's high
+    def getDayHigh(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        if(stock.dayRange is None):
+            YahooFinanceAPI.getDayRange(sym)
+            stock = YahooFinanceAPI.getInitializedStock(sym)
+            if(stock is None or stock.dayRange is None):
+                return None
+        YahooFinanceAPI.message(sym + " day high: " + str(stock.dayRange[1]))  
+        return stock.dayRange[1]
+
+    #gets the 52 week range
+    def get52WeekRange(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        yearRange = stock.yearRange
+        if(yearRange is None):
+            high = ""
+            low = ""
+            try:
+                xml = stock.xml.find_all("td", {"data-reactid" : "121"})
+                temp = xml[0].string.strip()
+                i = 0
+                while(i < len(temp) and temp[i] != " "):
+                    low += temp[i]
+                    i += 1
+                i += 3
+                while(i < len(temp)):
+                    high += temp[i]
+                    i+= 1
+                yearRange = [float(low), float(high)]
+                stock.yearRange = yearRange
+            except:
+                YahooFinanceAPI.message("52 week range data not currently available")
+                return None
+        return yearRange
+
+    #gets the 52 week low
+    def get52WeekLow(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        if(stock.yearRange is None):
+            YahooFinanceAPI.get52WeekRange(sym)
+            stock = YahooFinanceAPI.getInitializedStock(sym)
+            if(stock is None or stock.yearRange is None):
+                return None
+        YahooFinanceAPI.message(sym + " 52 week low: " + str(stock.yearRange[0]))  
+        return stock.yearRange[0]
+
+    #gets the 52 week high
+    def get52WeekHigh(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        if(stock.dayRange is None):
+            YahooFinanceAPI.get52WeekRange(sym)
+            stock = YahooFinanceAPI.getInitializedStock(sym)
+            if(stock is None or stock.yearRange is None):
+                return None
+        YahooFinanceAPI.message(sym + " 52 week high: " + str(stock.yearRange[1]))  
+        return stock.yearRange[1]
+
+    
+
         
 
         
@@ -152,6 +282,10 @@ class Stock:
     pointChangeAtClose = None
     percentageChangeAtClose = None
     previousClose = None
+    openPrice = None
+    dayRange = None
+    yearRange = None
+
 
     def __init__(self, xml, symbol):
         self.xml = xml
