@@ -58,15 +58,15 @@ class YahooFinanceAPI:
         if(price is None):
             try:
                 xml = stock.xml.find_all("span", {"data-reactid": "50"})
-                stock.priceAtClose = float(xml[0].string.strip())
+                stock.priceAtClose = float(xml[0].string.strip().replace(",",""))
                 price = stock.priceAtClose
             except:
                 YahooFinanceAPI.message("close price data not currently available")
                 return None
-        YahooFinanceAPI.message(sym + "Price of at close: " + str(price))
+        YahooFinanceAPI.message(sym + " Price of at close: " + str(price))
         return price
         
-    #Todo: get the proper id
+    #gets the stock price after hours
     def getStockPriceAfterHours(sym):
         stock = YahooFinanceAPI.getInitializedStock(sym)
         if(stock is None):
@@ -74,13 +74,13 @@ class YahooFinanceAPI:
         price = stock.priceAfterHours
         if(price is None):
             try:
-                xml = stock.xml.find_all("span", {"data-reactid": "40"})
-                stock.priceAfterHours = float(xml[0].string.strip())
+                xml = stock.xml.find_all("span", {"data-reactid": "55"})
+                stock.priceAfterHours = float(xml[0].string.strip().replace(",",""))
                 price = stock.priceAfterHours
             except:
                 YahooFinanceAPI.message("After hours data not currently available")
                 return None
-        YahooFinanceAPI.message("Price after hours: " + str(price))
+        YahooFinanceAPI.message(sym + " Price after hours: " + str(price))
         return price
 
     #gets the change at close and returns the point and percentage change
@@ -93,7 +93,7 @@ class YahooFinanceAPI:
         if(amountPoints is None or amountPercentage is None):
             try:
                 xml = stock.xml.find_all("span", {"data-reactid": "51"})
-                temp = xml[0].string.strip()
+                temp = xml[0].string.strip().replace(",","")
                 amountPoints = ""
                 amountPercentage = ""
                 i = 0
@@ -127,6 +127,50 @@ class YahooFinanceAPI:
         YahooFinanceAPI.message( sym + " percentage change at close: " + str(change[1]) + "%")
         return change[1]
 
+    #gets the change after hours and returns the point and percentage change
+    def getChangeAfterHours(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        amountPoints = stock.pointChangeAfterHours
+        amountPercentage = stock.percentageChangeAfterHours
+        if(amountPoints is None or amountPercentage is None):
+            try:
+                xml = stock.xml.find_all("span", {"data-reactid": "58"})
+                temp = xml[0].string.strip().replace(",","")
+                amountPoints = ""
+                amountPercentage = ""
+                i = 0
+                while(i < len(temp) and temp[i] != '('):
+                    amountPoints += temp[i]
+                    i += 1
+                i += 1
+                while(i < len(temp) and temp[i] != '%'):
+                    amountPercentage += temp[i] 
+                    i += 1
+                stock.pointChangeAfterHours = float(amountPoints)
+                stock.percentageChangeAfterHours = float(amountPercentage)
+            except:
+                YahooFinanceAPI.message("change after hours data not currently available")
+                return None
+        return [float(amountPoints), float(amountPercentage)]
+
+    #gets the point change at close
+    def getPointChangeAfterHours(sym):
+        change = YahooFinanceAPI.getChangeAfterHours(sym)
+        if(change is None):
+            return None
+        YahooFinanceAPI.message(sym + " point change after hours: " + str(change[0]))
+        return change[0]
+
+    #gets the percentage change at close
+    def getPercentageChangeAfterHours(sym):
+        change = YahooFinanceAPI.getChangeAfterHours(sym)
+        if(change is None):
+            return None
+        YahooFinanceAPI.message( sym + " percentage change after hours: " + str(change[1]) + "%")
+        return change[1]
+
     #gets the previous close 
     def getPreviousClose(sym):
         stock = YahooFinanceAPI.getInitializedStock(sym)
@@ -136,7 +180,7 @@ class YahooFinanceAPI:
         if(previousClose is None):
             try:
                 xml = stock.xml.find_all("span", {"data-reactid": "98"})
-                previousClose = float(xml[0].string.strip())
+                previousClose = float(xml[0].string.strip().replace(",",""))
                 stock.previousClose = previousClose
             except:
                 YahooFinanceAPI.message("previous close data not currently available")
@@ -153,7 +197,7 @@ class YahooFinanceAPI:
         if(openPrice is None):
             try:
                 xml = stock.xml.find_all("span", {"data-reactid" : "103"})
-                openPrice = float(xml[0].string.strip())
+                openPrice = float(xml[0].string.strip().replace(",",""))
                 stock.openPrice = openPrice
             except:
                 YahooFinanceAPI.message("Open price data not currently available")
@@ -172,7 +216,7 @@ class YahooFinanceAPI:
             low = ""
             try:
                 xml = stock.xml.find_all("td", {"data-reactid" : "117"})
-                temp = xml[0].string.strip()
+                temp = xml[0].string.strip().replace(",","")
                 i = 0
                 while(i < len(temp) and temp[i] != " "):
                     low += temp[i]
@@ -225,7 +269,7 @@ class YahooFinanceAPI:
             low = ""
             try:
                 xml = stock.xml.find_all("td", {"data-reactid" : "121"})
-                temp = xml[0].string.strip()
+                temp = xml[0].string.strip().replace(",","")
                 i = 0
                 while(i < len(temp) and temp[i] != " "):
                     low += temp[i]
@@ -259,7 +303,7 @@ class YahooFinanceAPI:
         stock = YahooFinanceAPI.getInitializedStock(sym)
         if(stock is None):
             return None
-        if(stock.dayRange is None):
+        if(stock.yearRange is None):
             YahooFinanceAPI.get52WeekRange(sym)
             stock = YahooFinanceAPI.getInitializedStock(sym)
             if(stock is None or stock.yearRange is None):
@@ -267,11 +311,19 @@ class YahooFinanceAPI:
         YahooFinanceAPI.message(sym + " 52 week high: " + str(stock.yearRange[1]))  
         return stock.yearRange[1]
 
-    
-
-        
-
-        
+    #gets the volume for a stock symbol
+    def getVolume(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        volume = stock.volume
+        if(volume is None):
+            volume = stock.getDataElement("126", "volume data not currently available")
+            if(volume is None):
+                return None
+            stock.volume = float(volume)
+        YahooFinanceAPI.message(sym + " volume: " + str(volume))
+        return volume
 
 
 class Stock:
@@ -281,10 +333,13 @@ class Stock:
     priceAfterHours = None
     pointChangeAtClose = None
     percentageChangeAtClose = None
+    pointChangeAfterHours = None
+    percentageChangeAfterHours = None
     previousClose = None
     openPrice = None
     dayRange = None
     yearRange = None
+    volume = None
 
 
     def __init__(self, xml, symbol):
@@ -293,7 +348,14 @@ class Stock:
 
     def __str__(self):
         return self.sym
-    
+
+    def getDataElement(self, id, message):
+        try:
+            xml = self.xml.find_all("span", {"data-reactid" : str(id)})
+            return xml[0].string.strip().replace(",","")
+        except:
+            YahooFinanceAPI.message(message)
+            return None    
 
 
 

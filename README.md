@@ -8,11 +8,17 @@ current functionalities:
 
   -getStockPrice(Symbol)        - takes in the stock symobol and gets the stock price. If no data is available or if the stock has not been initialized then None is returned 
 
+  -getStockPriceAfterHours(Symbol) - takes in the stock symobol and gets the stock price after hours. If no data is available or if the stock has not been initialized then None is returned 
+
   -getChangeAtClose(Symbol)     -takes in the stock symbol and returns the point change and percentage change in an array. If no data is available or if the stock has not been initialized then None is returned 
 
   -getPointChangeAtClose(Symbol) - takes in the stock symbol and returns the point change at close. If no data is available or if the stock has not been initialized then None is returned 
 
   -getPercentageChangeAtClose(Symbol) - takes in the stock symbol and returns the percentage change at close. If no data is available or if the stock has not been initialized then None is returned 
+
+  -getPointChangeAfterHours(Symbol) - takes in the stock symbol and returns the point change after hours. If no data is available or if the stock has not been initialized then None is returned 
+
+  -getPercentageChangeAfterHours(Symbol) - takes in the stock symbol and returns the percentage change after hours. If no data is available or if the stock has not been initialized then None is returned 
 
   -getPreviousClose(Symbol) - takes in the stock symbol and returns the previous close price. If no data is available or if the stock has not been initialized then None is returned 
 
@@ -29,5 +35,7 @@ current functionalities:
   -get52WeekLow(Symbol) - takes in the stock symbol and returns the 52 week's low. If no data is available or if the stock has not been initialized then None is returned 
 
   -get52WeekHigh(Symbol) - takes in the stock symbol and returns the 52 week's high. If no data is available or if the stock has not been initialized then None is returned
+
+  -getVolume(Symbol) - takes in the stock symbol and returns the volume. If no data is available or if the stock has not been initialized then None is returned
 
   
