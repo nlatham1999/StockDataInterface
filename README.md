@@ -38,4 +38,8 @@ current functionalities:
 
   -getVolume(Symbol) - takes in the stock symbol and returns the volume. If no data is available or if the stock has not been initialized then None is returned
 
+  -getAverageVolume(Symbol) - takes in the stock symbol and returns the average volume. If no data is available or if the stock has not been initialized then None is returned
+
+
+  -getMarketCap(Symbol) - takes in the stock symbol and returns the market cap. If no data is available or if the stock has not been initialized then None is returned
   

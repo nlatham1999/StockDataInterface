@@ -30,14 +30,17 @@ class YahooFinanceAPI:
     #takes in a stock symbol and stores the data. Use this every time you want to refresh
     def initializStockData(sym):
         xml = -1
+        xmlHistorical = -1
         try:
             url = "https://finance.yahoo.com/quote/" + sym
             xml = YahooFinanceAPI.scraper(url)
+            url = "https://finance.yahoo.com/quote/" + sym + "/history?p=" + sym
+            xmlHistorical = YahooFinanceAPI.scraper(url)
             YahooFinanceAPI.message("Success initializing: " + sym)
         except:
             YahooFinanceAPI.message("Error initializing: " + sym)
             return None
-        stock = Stock(xml, sym)
+        stock = Stock(xml, xmlHistorical, sym)
         YahooFinanceAPI.stocks[sym] = stock
 
     #returns the initialized stock
@@ -325,10 +328,47 @@ class YahooFinanceAPI:
         YahooFinanceAPI.message(sym + " volume: " + str(volume))
         return volume
 
+    def getAverageVolume(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        averageVolume = stock.averageVolume
+        if(averageVolume is None):
+            averageVolume = stock.getDataElement("131", "average volume data not currently available")
+            if(averageVolume is None):
+                return None
+            stock.averageVolume = float(averageVolume)
+        YahooFinanceAPI.message(sym + " average volume: " + str(averageVolume))
+        return averageVolume
+
+    def getMarketCap(sym):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        marketCap = stock.marketCap
+        if(marketCap is None):
+            temp = stock.getDataElement("139", "market cap data not currently available")
+            if(temp is None):
+                return None
+            marketCap = ""
+            for i in temp:
+                if(i.isdigit() or i == "."):
+                    marketCap += i
+            marketCap = float(marketCap)
+            if(temp[len(temp) - 1] == "T"):
+                marketCap *= 1000000000000
+            elif(temp[len(temp) - 1] == "B"):
+                marketCap *= 1000000000
+            elif(temp[len(temp) - 1] == "M"):
+                marketCap *= 1000000
+            YahooFinanceAPI.message(sym + " market cap: " + str(marketCap))
+            return marketCap
+        
 
 class Stock:
     symbol = None
     xml = None
+    xmlHistorical = None
     priceAtClose = None
     priceAfterHours = None
     pointChangeAtClose = None
@@ -340,10 +380,13 @@ class Stock:
     dayRange = None
     yearRange = None
     volume = None
+    averageVolume = None
+    marketCap = None
 
 
-    def __init__(self, xml, symbol):
+    def __init__(self, xml, xmlHistorical, symbol):
         self.xml = xml
+        self.xmlHistorical = xmlHistorical
         self.symbol = symbol
 
     def __str__(self):
