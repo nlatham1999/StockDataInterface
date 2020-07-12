@@ -1,0 +1,4 @@
+Failed trying to get the after hours price
+Failed trying to get the percentage change after hours
+Failed trying to get the point change after hours
+15 tests passed without errors

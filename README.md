@@ -42,4 +42,13 @@ current functionalities:
 
 
   -getMarketCap(Symbol) - takes in the stock symbol and returns the market cap. If no data is available or if the stock has not been initialized then None is returned
-  
+
+  -getHistoricalDataAll(symbol) - takes in the stock symbol and returns all historical data in a dict with keys being "open", "low", "close", "high" holding the historical data in an array from most recent to least recent. If no data is available or if the stock has not been initialized then None is returned
+
+  - getHistoricalDataRangeTradingDays(symbol, num1, num2) - takes in the stock symbol and a range of days and returns the historical data in a dict with keys being "open", "low", "close", "high" holding the historical data in an array from most recent to least recent. If no data is available or if the stock has not been initialized then None is returned
+
+  - getHistoricalDataPastXTradingDays(symbol, num1) - takes in the stock symbol and the past number of days and returns the historical data in a dict with keys being "open", "low", "close", "high" holding the historical data in an array from most recent to least recent. If no data is available or if the stock has not been initialized then None is returned
+
+  - getHistoricalDataPast5TradingDays(symbol) - takes in the stock symbol returns the historical data of the past five days in a dict with keys being "open", "low", "close", "high" holding the historical data in an array from most recent to least recent. If no data is available or if the stock has not been initialized then None is returned
+
+  - getHistoricalDataPast30TradingDays(symbol) - takes in the stock symbol returns the historical data of the past thirty days in a dict with keys being "open", "low", "close", "high" holding the historical data in an array from most recent to least recent. If no data is available or if the stock has not been initialized then None is returned
