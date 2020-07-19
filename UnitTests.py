@@ -12,7 +12,8 @@ api.setDebugMode(False)
 file = open("UnitTestOutput.txt", "w")
 i = 0
 
-i += unitTest(api.initializStockData("AAL"), "Failed trying to initialize AAL", file) 
+i += unitTest(api.initializStockData("AAL"), "Failed trying to initialize AAL", file)
+# i += unitTest(api.initializStockDataFromJson("AAL"), "failed trying to initialize data from Json file", file) 
 i += unitTest(api.getStockPriceAtClose("AAL"), "Failed trying to get the closing price", file)
 i += unitTest(api.getStockPriceAfterHours("AAL"), "Failed trying to get the after hours price", file)
 i += unitTest(api.getPercentageChangeAtClose("AAL"), "Failed trying to get the percentage change at close", file)

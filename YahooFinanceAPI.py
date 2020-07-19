@@ -13,7 +13,7 @@ import json
 class YahooFinanceAPI:
 
     stocks = dict()
-    debugMode = False
+    __debugMode = False
 
     #general scraper to get the url
     def scraper(url):
@@ -24,10 +24,10 @@ class YahooFinanceAPI:
 
     #sets the debug mode
     def setDebugMode(mode):
-        YahooFinanceAPI.debugMode = mode
+        YahooFinanceAPI.__debugMode = mode
 
     def message(text):
-        if(YahooFinanceAPI.debugMode):
+        if(YahooFinanceAPI.__debugMode):
             print(text)
 
     #takes in a stock symbol and stores the data. Use this every time you want to refresh
@@ -41,11 +41,21 @@ class YahooFinanceAPI:
             url = "https://finance.yahoo.com/quote/"+sym+"/history?period1=1&period2=2000000000&interval=1d&filter=history&frequency=1d"
             xmlHistorical = YahooFinanceAPI.scraper(url)
             YahooFinanceAPI.message("Success initializing: " + sym)
+
         except:
             YahooFinanceAPI.message("Error initializing: " + sym)
             return None
         stock = Stock(xml, xmlHistorical, sym)
 
+        YahooFinanceAPI.__initStockData(stock)
+
+        YahooFinanceAPI.stocks[sym] = stock
+
+        YahooFinanceAPI.writeToJson(sym)
+
+        return True
+
+    def __initStockData(stock):
         YahooFinanceAPI.__initStockPriceAtClose(stock)
         YahooFinanceAPI.__initStockPriceAfterHours(stock)
         YahooFinanceAPI.__initChangeAtClose(stock)
@@ -59,11 +69,6 @@ class YahooFinanceAPI:
         YahooFinanceAPI.__initMarketCap(stock)
         YahooFinanceAPI.__initHistoricalDataAll(stock)
 
-        YahooFinanceAPI.stocks[sym] = stock
-
-        YahooFinanceAPI.writeToJson(sym)
-
-        return True
 
     def writeToJson(sym):
         stock = YahooFinanceAPI.getInitializedStock(sym)
@@ -73,6 +78,8 @@ class YahooFinanceAPI:
         data = {}
         data["symbol"] = stock.symbol
         data["price at close"] = stock.priceAtClose
+        data["point change at close"] = stock.pointChangeAtClose
+        data["percentage change at close"] = stock.percentageChangeAtClose
         data["price after hours"] = stock.priceAfterHours
         data["percentage change after hours"] = stock.percentageChangeAfterHours
         data["point change after hours"] = stock.pointChangeAfterHours
@@ -82,11 +89,41 @@ class YahooFinanceAPI:
         data["volume"] = stock.volume
         data["average volume"] = stock.averageVolume
         data["market cap"] = stock.marketCap
+        data["52 week low"] = stock.yearRange[0]
+        data["52 week high"] = stock.yearRange[1]
         data["historical data"] = stock.OHCL
 
         json.dump(data, file, indent=4) 
 
+    def initializStockDataFromJson(sym):
 
+        stock = Stock("", "", sym)
+
+        try:
+            fileName = sym + "_data.json"
+            file = open(fileName, "r")
+            data = json.load(file)
+            stock.priceAtClose = data["symbol"]
+            stock.priceAfterHours = data["price at close"]
+            stock.pointChangeAtClose = data["point change at close"]
+            stock.percentageChangeAtClose = data["percentage change at close"]
+            stock.percentageChangeAfterHours = data["percentage change after hours"]
+            stock.pointChangeAfterHours = data["point change after hours"]
+            stock.previousClose = data["previous close"]
+            stock.openPrice = data["open price"]
+            stock.dayRange = data["day range"]
+            stock.volume = data["volume"]
+            stock.averageVolume = data["average volume"]
+            stock.marketCap = data["market cap"]
+            stock.yearRange = [data["52 week low"], data["52 week high"]]
+            stock.OHCL = data["historical data"]
+        except:
+            YahooFinanceAPI.message("error trying to read data from " + sym + "_data.json")
+            return None
+
+        YahooFinanceAPI.stocks[sym] = stock
+
+        return True
 
     def __initStockPriceAtClose(stock):
         try:
@@ -242,6 +279,8 @@ class YahooFinanceAPI:
             high = []
             low = []
             close = []
+            adjClose = []
+            volume = []
             for x in data:
                 try:
                     # day = [float(x["open"]), float(x["high"]), float(x['close']), float(x["low"])]
@@ -251,12 +290,16 @@ class YahooFinanceAPI:
                     high.append(float(x["high"]))
                     low.append(float(x["low"]))
                     close.append(float(x["close"]))
+                    volume.append(float(x["volume"]))
+                    adjClose.append(float(x["adjclose"]))
                 except:
                     day = ""
             ohcl["open"] = openD
             ohcl["high"] = high
             ohcl["low"] = low
             ohcl["close"] = close
+            ohcl["volume"] = volume
+            ohcl["adjclose"] = adjClose
         except:
             YahooFinanceAPI.message("error trying to access OHCL data")
             return None
