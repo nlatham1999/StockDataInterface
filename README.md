@@ -1,6 +1,9 @@
 A Python API for Yahoo Finance
 
-A fast, easy API to collect stock data from Yahoo Finance. Collected data gets written into a json file and can be used later. Data collected includes current data as well as all historical data for a stock up to the past 50 years
+A fast, easy API that retrieves stock data from Yahoo Finance.
+Data can be initialized by scraping data from yahoo finance or by reading from a json file saved by a previous session.
+Data collected includes current data as well as all historical data for a stock up to the past 50 years.
+Unlike other APIs that collect data from Yahoo Finance this API has built in easy to use functions to filter collected data.
 
 current functionalities:
 
