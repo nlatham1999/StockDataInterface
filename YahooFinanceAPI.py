@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 import lxml
 import html5lib
 import ast
-import matplotlib.pyplot as plt 
 import json
+from datetime import datetime, timedelta
 
 class YahooFinanceAPI:
 
@@ -261,48 +261,51 @@ class YahooFinanceAPI:
         stock.marketCap = marketCap
 
     def __initHistoricalDataAll(stock):
-        try:
-            xml = stock.xmlHistorical
-            temp = str(xml)
-            i = temp.find("HistoricalPriceStore")
-            stringData = ""
-            while(temp[i] != "["):
-                i += 1
-            while(temp[i] != "]"):
-                stringData += temp[i]
-                i += 1
-            stringData += "]"
-            ohcl = {}
-            data = ast.literal_eval(stringData)
-            # lastDay = int(int(data[0]["date"]) / 86400)
-            openD = []
-            high = []
-            low = []
-            close = []
-            adjClose = []
-            volume = []
-            for x in data:
-                try:
-                    # day = [float(x["open"]), float(x["high"]), float(x['close']), float(x["low"])]
-                    # date = lastDay - int(int(x["date"]) / 86400)
-                    # ohcl[str(int(date))] = day
-                    openD.append(float(x["open"]))
-                    high.append(float(x["high"]))
-                    low.append(float(x["low"]))
-                    close.append(float(x["close"]))
-                    volume.append(float(x["volume"]))
-                    adjClose.append(float(x["adjclose"]))
-                except:
-                    day = ""
-            ohcl["open"] = openD
-            ohcl["high"] = high
-            ohcl["low"] = low
-            ohcl["close"] = close
-            ohcl["volume"] = volume
-            ohcl["adjclose"] = adjClose
-        except:
-            YahooFinanceAPI.message("error trying to access OHCL data")
-            return None
+        # try:
+        xml = stock.xmlHistorical
+        temp = str(xml)
+        i = temp.find("HistoricalPriceStore")
+        stringData = ""
+        while(temp[i] != "["):
+            i += 1
+        while(temp[i] != "]"):
+            stringData += temp[i]
+            i += 1
+        stringData += "]"
+        ohcl = {}
+        data = ast.literal_eval(stringData)
+        openD = []
+        high = []
+        low = []
+        close = []
+        adjClose = []
+        volume = []
+        date = []
+        firstDay = datetime(1970, 1, 1)
+        for x in data:
+            try:
+                # day = [float(x["open"]), float(x["high"]), float(x['close']), float(x["low"])]
+                dateInt = int(int(x["date"]) / 86400)
+                dateString = (firstDay + timedelta(days=dateInt)).date().isoformat()
+                openD.append(float(x["open"]))
+                high.append(float(x["high"]))
+                low.append(float(x["low"]))
+                close.append(float(x["close"]))
+                volume.append(float(x["volume"]))
+                adjClose.append(float(x["adjclose"]))
+                date.append(dateString)
+            except:
+                day = ""
+        ohcl["open"] = openD
+        ohcl["high"] = high
+        ohcl["low"] = low
+        ohcl["close"] = close
+        ohcl["volume"] = volume
+        ohcl["adjclose"] = adjClose
+        ohcl["date"] = date
+        # except:
+        #     YahooFinanceAPI.message("error trying to access OHCL data")
+        #     return None
         stock.OHCL = ohcl
 
     #returns the initialized stock
@@ -561,6 +564,21 @@ class YahooFinanceAPI:
     #return the OHCL data of the past 30 trading days from most recent to least recent
     def getHistoricalDataPast30TradingDays(sym):
         return YahooFinanceAPI.getHistoricalDataPastXTradingDays(sym, 30)
+
+    #takes in two dates of strings in 'YYYY-MM-DD' format and returns the historical data in that range
+    def getHistoricalDataRangeOfDates(sym, date1, date2):
+        stock = YahooFinanceAPI.getInitializedStock(sym)
+        if(stock is None):
+            return None
+        dates = stock.OHCL["date"]
+        print(dates)
+        try:
+            d1 = dates.index(date1)
+            d2 = dates.index(date2)
+        except:
+            YahooFinanceAPI.message("error trying to access data from dates given")
+            return None
+        return YahooFinanceAPI.getHistoricalDataRangeTradingDays(sym, d1, d2)
 
     
 
