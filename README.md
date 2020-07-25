@@ -9,7 +9,7 @@ current functionalities:
 
   - initializeStockData(symbol)  - takes in a stock symbol and collects the needed data to be processed. If the symbol is invalid or the connection refused then None is returned
 
-  - initializeStockDataFRomJson - initializes the stock data from a previously generated json doc. Returns None if now json doc is available.
+  - initializeStockDataFromJson - initializes the stock data from a previously generated json doc. Returns None if no json doc is available.
 
   - getStockPrice(Symbol)        - takes in the stock symobol and gets the stock price. If no data is available or if the stock has not been initialized then None is returned 
 
