@@ -32,7 +32,6 @@ i += unitTest(api.getMarketCap("AAL"), "Failed trying to get the market cap", fi
 i += unitTest(api.getHistoricalDataAll("AAL"), "Failed trying to get the historical data", file)
 # i += unitTest(api.getHistoricalDataThisWeek("AAL"), "Failed trying to get the historical data for this week", file)
 i += unitTest(api.getHistoricalDataPast5TradingDays("AAL"), "Failed trying to get past 5 days data", file)
-api.getHistoricalDataRangeOfDates("AAL", "2020-07-01", "2020-07-24")
 i += unitTest(api.getHistoricalDataRangeOfDates("AAL", "2020-07-01", "2020-07-24"), "Failed trying to get range of dates data", file)
 
 file.write(str(i)+ " tests passed without errors")
