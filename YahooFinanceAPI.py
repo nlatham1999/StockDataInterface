@@ -10,7 +10,7 @@ import ast
 import json
 from datetime import datetime, timedelta
 
-class StockAPI:
+class StockDataInterface:
 
     stocks = dict()
     __debugMode = False
@@ -24,10 +24,10 @@ class StockAPI:
 
     #sets the debug mode
     def setDebugMode(mode):
-        StockAPI.__debugMode = mode
+        StockDataInterface.__debugMode = mode
 
     def message(text):
-        if(StockAPI.__debugMode):
+        if(StockDataInterface.__debugMode):
             print(text)
 
     #takes in a stock symbol and stores the data. Use this every time you want to refresh
@@ -36,42 +36,42 @@ class StockAPI:
         xmlHistorical = -1
         try:
             url = "https://finance.yahoo.com/quote/" + sym
-            xml = StockAPI.scraper(url)
+            xml = StockDataInterface.scraper(url)
             
             url = "https://finance.yahoo.com/quote/"+sym+"/history?period1=1&period2=2000000000&interval=1d&filter=history&frequency=1d"
-            xmlHistorical = StockAPI.scraper(url)
-            StockAPI.message("Success initializing: " + sym)
+            xmlHistorical = StockDataInterface.scraper(url)
+            StockDataInterface.message("Success initializing: " + sym)
 
         except:
-            StockAPI.message("Error initializing: " + sym)
+            StockDataInterface.message("Error initializing: " + sym)
             return None
         stock = Stock(xml, xmlHistorical, sym)
 
-        StockAPI.__initStockData(stock)
+        StockDataInterface.__initStockData(stock)
 
-        StockAPI.stocks[sym] = stock
+        StockDataInterface.stocks[sym] = stock
 
-        StockAPI.writeToJson(sym)
+        StockDataInterface.writeToJson(sym)
 
         return True
 
     def __initStockData(stock):
-        StockAPI.__initStockPriceAtClose(stock)
-        StockAPI.__initStockPriceAfterHours(stock)
-        StockAPI.__initChangeAtClose(stock)
-        StockAPI.__initChangeAfterHours(stock)
-        StockAPI.__initPreviousClose(stock)
-        StockAPI.__initOpen(stock)
-        StockAPI.__initDayRange(stock)
-        StockAPI.__init52WeekRange(stock)
-        StockAPI.__initVolume(stock)
-        StockAPI.__initAverageVolume(stock)
-        StockAPI.__initMarketCap(stock)
-        StockAPI.__initHistoricalDataAll(stock)
+        StockDataInterface.__initStockPriceAtClose(stock)
+        StockDataInterface.__initStockPriceAfterHours(stock)
+        StockDataInterface.__initChangeAtClose(stock)
+        StockDataInterface.__initChangeAfterHours(stock)
+        StockDataInterface.__initPreviousClose(stock)
+        StockDataInterface.__initOpen(stock)
+        StockDataInterface.__initDayRange(stock)
+        StockDataInterface.__init52WeekRange(stock)
+        StockDataInterface.__initVolume(stock)
+        StockDataInterface.__initAverageVolume(stock)
+        StockDataInterface.__initMarketCap(stock)
+        StockDataInterface.__initHistoricalDataAll(stock)
 
 
     def writeToJson(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         file = open( sym + "_data.json", "w")
@@ -118,10 +118,10 @@ class StockAPI:
             stock.yearRange = [data["52 week low"], data["52 week high"]]
             stock.OHCL = data["historical data"]
         except:
-            StockAPI.message("error trying to read data from " + sym + "_data.json")
+            StockDataInterface.message("error trying to read data from " + sym + "_data.json")
             return None
 
-        StockAPI.stocks[sym] = stock
+        StockDataInterface.stocks[sym] = stock
 
         return True
 
@@ -130,14 +130,14 @@ class StockAPI:
             xml = stock.xml.find_all("span", {"data-reactid": "50"})
             stock.priceAtClose = float(xml[0].string.strip().replace(",",""))
         except:
-            StockAPI.message(stock.symbol + " close price data not currently available")
+            StockDataInterface.message(stock.symbol + " close price data not currently available")
 
     def __initStockPriceAfterHours(stock):
         try:
             xml = stock.xml.find_all("span", {"data-reactid": "55"})
             stock.priceAfterHours = float(xml[0].string.strip().replace(",",""))
         except:
-            StockAPI.message(stock.symbol + " after hours data not currently available")
+            StockDataInterface.message(stock.symbol + " after hours data not currently available")
 
     def __initChangeAtClose(stock):
         try:
@@ -156,7 +156,7 @@ class StockAPI:
             stock.pointChangeAtClose = float(amountPoints)
             stock.percentageChangeAtClose = float(amountPercentage)
         except:
-            StockAPI.message(stock.symbol + " change at close data not currently available")
+            StockDataInterface.message(stock.symbol + " change at close data not currently available")
 
     def __initChangeAfterHours(stock):
         try:
@@ -175,7 +175,7 @@ class StockAPI:
             stock.pointChangeAfterHours = float(amountPoints)
             stock.percentageChangeAfterHours = float(amountPercentage)
         except:
-            StockAPI.message(stock.symbol + " change after hours data not currently available")
+            StockDataInterface.message(stock.symbol + " change after hours data not currently available")
 
     def __initPreviousClose(stock):
         try:
@@ -183,7 +183,7 @@ class StockAPI:
             previousClose = float(xml[0].string.strip().replace(",",""))
             stock.previousClose = previousClose
         except:
-            StockAPI.message(stock.symbol + " previous close data not currently available")
+            StockDataInterface.message(stock.symbol + " previous close data not currently available")
 
     def __initOpen(stock):
         try:
@@ -191,7 +191,7 @@ class StockAPI:
             openPrice = float(xml[0].string.strip().replace(",",""))
             stock.openPrice = openPrice
         except:
-            StockAPI.message(stock.symbol + " open price data not currently available")
+            StockDataInterface.message(stock.symbol + " open price data not currently available")
 
     def __initDayRange(stock):
         high = ""
@@ -210,7 +210,7 @@ class StockAPI:
             dayRange = [float(low), float(high)]
             stock.dayRange = dayRange
         except:
-            StockAPI.message(stock.symbol + " day range data not currently available")
+            StockDataInterface.message(stock.symbol + " day range data not currently available")
 
     def __init52WeekRange(stock):
         high = ""
@@ -229,7 +229,7 @@ class StockAPI:
             yearRange = [float(low), float(high)]
             stock.yearRange = yearRange
         except:
-            StockAPI.message("52 week range data not currently available")
+            StockDataInterface.message("52 week range data not currently available")
 
     def __initVolume(stock):
         volume = stock.getDataElement("126", "volume data not currently available")
@@ -311,37 +311,37 @@ class StockAPI:
     #returns the initialized stock
     def getInitializedStock(sym):
         try:
-            stock = StockAPI.stocks[sym]
+            stock = StockDataInterface.stocks[sym]
             return stock
         except:
-            StockAPI.message("Error trying to access: " + sym + ". Try initializing the stock first")
+            StockDataInterface.message("Error trying to access: " + sym + ". Try initializing the stock first")
             return None
     
     #gets the stock price from a list of stocks
     def getStockPriceAtClose(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         price = stock.priceAtClose
         if(price is None):
             return None            
-        StockAPI.message(sym + " Price of at close: " + str(price))
+        StockDataInterface.message(sym + " Price of at close: " + str(price))
         return price
         
     #gets the stock price after hours
     def getStockPriceAfterHours(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         price = stock.priceAfterHours
         if(price is None):
             return None
-        StockAPI.message(sym + " Price after hours: " + str(price))
+        StockDataInterface.message(sym + " Price after hours: " + str(price))
         return price
 
     #gets the change at close and returns the point and percentage change
     def getChangeAtClose(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         amountPoints = stock.pointChangeAtClose
@@ -352,23 +352,23 @@ class StockAPI:
 
     #gets the point change at close
     def getPointChangeAtClose(sym):
-        change = StockAPI.getChangeAtClose(sym)
+        change = StockDataInterface.getChangeAtClose(sym)
         if(change is None):
             return None
-        StockAPI.message(sym + " point change at close: " + str(change[0]))
+        StockDataInterface.message(sym + " point change at close: " + str(change[0]))
         return change[0]
 
     #gets the percentage change at close
     def getPercentageChangeAtClose(sym):
-        change = StockAPI.getChangeAtClose(sym)
+        change = StockDataInterface.getChangeAtClose(sym)
         if(change is None):
             return None
-        StockAPI.message( sym + " percentage change at close: " + str(change[1]) + "%")
+        StockDataInterface.message( sym + " percentage change at close: " + str(change[1]) + "%")
         return change[1]
 
     #gets the change after hours and returns the point and percentage change
     def getChangeAfterHours(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         amountPoints = stock.pointChangeAfterHours
@@ -379,45 +379,45 @@ class StockAPI:
 
     #gets the point change at close
     def getPointChangeAfterHours(sym):
-        change = StockAPI.getChangeAfterHours(sym)
+        change = StockDataInterface.getChangeAfterHours(sym)
         if(change is None):
             return None
-        StockAPI.message(sym + " point change after hours: " + str(change[0]))
+        StockDataInterface.message(sym + " point change after hours: " + str(change[0]))
         return change[0]
 
     #gets the percentage change at close
     def getPercentageChangeAfterHours(sym):
-        change = StockAPI.getChangeAfterHours(sym)
+        change = StockDataInterface.getChangeAfterHours(sym)
         if(change is None):
             return None
-        StockAPI.message( sym + " percentage change after hours: " + str(change[1]) + "%")
+        StockDataInterface.message( sym + " percentage change after hours: " + str(change[1]) + "%")
         return change[1]
 
     #gets the previous close 
     def getPreviousClose(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         previousClose = stock.previousClose
         if(previousClose is None):
             return None
-        StockAPI.message(sym + " previous close: " + str(previousClose))
+        StockDataInterface.message(sym + " previous close: " + str(previousClose))
         return previousClose
 
     #gets the opening price
     def getOpen(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         openPrice = stock.openPrice
         if(openPrice is None):
             return None
-        StockAPI.message(sym + " open: " + str(openPrice))
+        StockDataInterface.message(sym + " open: " + str(openPrice))
         return openPrice
 
     #gets the day's range
     def  getDayRange(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         dayRange = stock.dayRange
@@ -427,33 +427,33 @@ class StockAPI:
 
     #gets the day's low
     def getDayLow(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         if(stock.dayRange is None):
-            StockAPI.getDayRange(sym)
-            stock = StockAPI.getInitializedStock(sym)
+            StockDataInterface.getDayRange(sym)
+            stock = StockDataInterface.getInitializedStock(sym)
             if(stock is None or stock.dayRange is None):
                 return None
-        StockAPI.message(sym + " day low: " + str(stock.dayRange[0]))  
+        StockDataInterface.message(sym + " day low: " + str(stock.dayRange[0]))  
         return stock.dayRange[0]
 
     #gets the day's high
     def getDayHigh(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         if(stock.dayRange is None):
-            StockAPI.getDayRange(sym)
-            stock = StockAPI.getInitializedStock(sym)
+            StockDataInterface.getDayRange(sym)
+            stock = StockDataInterface.getInitializedStock(sym)
             if(stock is None or stock.dayRange is None):
                 return None
-        StockAPI.message(sym + " day high: " + str(stock.dayRange[1]))  
+        StockDataInterface.message(sym + " day high: " + str(stock.dayRange[1]))  
         return stock.dayRange[1]
 
     #gets the 52 week range
     def get52WeekRange(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         yearRange = stock.yearRange
@@ -463,65 +463,65 @@ class StockAPI:
 
     #gets the 52 week low
     def get52WeekLow(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         if(stock.yearRange is None):
-            StockAPI.get52WeekRange(sym)
-            stock = StockAPI.getInitializedStock(sym)
+            StockDataInterface.get52WeekRange(sym)
+            stock = StockDataInterface.getInitializedStock(sym)
             if(stock is None or stock.yearRange is None):
                 return None
-        StockAPI.message(sym + " 52 week low: " + str(stock.yearRange[0]))  
+        StockDataInterface.message(sym + " 52 week low: " + str(stock.yearRange[0]))  
         return stock.yearRange[0]
 
     #gets the 52 week high
     def get52WeekHigh(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         if(stock.yearRange is None):
-            StockAPI.get52WeekRange(sym)
-            stock = StockAPI.getInitializedStock(sym)
+            StockDataInterface.get52WeekRange(sym)
+            stock = StockDataInterface.getInitializedStock(sym)
             if(stock is None or stock.yearRange is None):
                 return None
-        StockAPI.message(sym + " 52 week high: " + str(stock.yearRange[1]))  
+        StockDataInterface.message(sym + " 52 week high: " + str(stock.yearRange[1]))  
         return stock.yearRange[1]
 
     #gets the volume for a stock symbol
     def getVolume(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         volume = stock.volume
         if(volume is None):
             return None
-        StockAPI.message(sym + " volume: " + str(volume))
+        StockDataInterface.message(sym + " volume: " + str(volume))
         return volume
 
     def getAverageVolume(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         averageVolume = stock.averageVolume
         if(averageVolume is None):
             return None
-        StockAPI.message(sym + " average volume: " + str(averageVolume))
+        StockDataInterface.message(sym + " average volume: " + str(averageVolume))
         return averageVolume
 
     def getMarketCap(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         marketCap = stock.marketCap
         if(marketCap is None):
             return None
-        StockAPI.message(sym + " market cap: " + str(marketCap))
+        StockDataInterface.message(sym + " market cap: " + str(marketCap))
         return marketCap
 
     #returns the historical data in a dict with keys: "open", "low", "high", "close"
     #each key holds data from most recent to least recent
     def getHistoricalDataAll(sym):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         ohcl = stock.OHCL
@@ -536,7 +536,7 @@ class StockAPI:
             t = num2
             num2 = num1
             num1 = t
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         ohcl = stock.OHCL
@@ -555,19 +555,19 @@ class StockAPI:
 
     #returns the historical data in OHCL format from an x number of trading days from most recent to least recent
     def getHistoricalDataPastXTradingDays(sym, num):
-        return StockAPI.getHistoricalDataRangeTradingDays(sym, 0, num)
+        return StockDataInterface.getHistoricalDataRangeTradingDays(sym, 0, num)
 
     #returns the OHCL data of the past 5 trading days from most recent to least recent
     def getHistoricalDataPast5TradingDays(sym):
-        return StockAPI.getHistoricalDataPastXTradingDays(sym, 5)
+        return StockDataInterface.getHistoricalDataPastXTradingDays(sym, 5)
 
     #return the OHCL data of the past 30 trading days from most recent to least recent
     def getHistoricalDataPast30TradingDays(sym):
-        return StockAPI.getHistoricalDataPastXTradingDays(sym, 30)
+        return StockDataInterface.getHistoricalDataPastXTradingDays(sym, 30)
 
     #takes in two dates of strings in 'YYYY-MM-DD' format and returns the historical data in that range
     def getHistoricalDataRangeOfDates(sym, date1, date2):
-        stock = StockAPI.getInitializedStock(sym)
+        stock = StockDataInterface.getInitializedStock(sym)
         if(stock is None):
             return None
         dates = stock.OHCL["date"]
@@ -576,9 +576,9 @@ class StockAPI:
             d1 = dates.index(date1)
             d2 = dates.index(date2)
         except:
-            StockAPI.message("error trying to access data from dates given")
+            StockDataInterface.message("error trying to access data from dates given")
             return None
-        return StockAPI.getHistoricalDataRangeTradingDays(sym, d1, d2)
+        return StockDataInterface.getHistoricalDataRangeTradingDays(sym, d1, d2)
 
     
 
@@ -620,7 +620,7 @@ class Stock:
             xml = self.xml.find_all("span", {"data-reactid" : str(id)})
             return xml[0].string.strip().replace(",","")
         except:
-            StockAPI.message(message)
+            StockDataInterface.message(message)
             return None    
 
 
