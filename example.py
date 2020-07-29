@@ -1,6 +1,6 @@
 #a simple example of the api
 
-from YahooFinanceAPI import YahooFinanceAPI as api
+from YahooFinanceAPI import StockAPI as api
 import matplotlib.pyplot as plt  
 
 api.setDebugMode(True)
