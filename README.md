@@ -3,7 +3,7 @@
 
 - [About](#About)
 - [Installation](#Installation)
-- [Sample Code](#Sample COde)
+- [Sample Code](#Sample Code)
 - [Dependencies](#Dependencies)
 - [Documentation](#Documentation)
 
