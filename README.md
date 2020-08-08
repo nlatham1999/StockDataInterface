@@ -1,12 +1,94 @@
-# Information
+# Table of Contents
+
+
+- [About](#About)
+- [Installation](#Installation)
+- [Sample Code](#Sample COde)
+- [Dependencies](#Dependencies)
+- [Documentation](#Documentation)
+
+# ABout
 
 A fast, easy API that retrieves stock data from Yahoo Finance.
 Data can be initialized by scraping data from yahoo finance or by reading from a json file saved by a previous session.
 Data collected includes current data as well as all historical data for a stock up to the past 50 years.
 Unlike other APIs that collect data from Yahoo Finance this API has built in easy to use functions to filter collected data.
-#Installation
 
-## Required Dependencies
+---
+
+# Installation
+
+```shell
+$ pip install StockDataInterface
+```
+
+---
+
+# Sample Code
+
+ ```python
+ #Nick Latham
+ #8/7/2020
+ #print and plot the close data of Apple from the past year
+
+from StockDataInterface import api 
+import matplotlib.pyplot as plt #(pip install matplotlib)
+
+#first initialize the stock
+api.initializStockData("AAPL")
+
+#get the historical data from the past year
+data = api.getHistoricalDataRangeOfDates("AAPL", "2019-08-07", "2020-08-07")
+
+#get the close data into an array using the 'close' key
+#keys available are 'open', 'low', 'close', 'high', 'volume', 'adjclose', and 'date'
+closeData = data['close']
+
+#we need to reverse the array because historical data is returned from most recent to least recent
+closeData.reverse()
+
+#plot and show the graph
+plt.plot(closeData)
+plt.show()
+
+ ```
+
+ ```python
+ #Nick Latham
+ #8/7/2020
+ #compare close prices from Delta and United Airlines from the past 30 trading days
+
+from StockDataInterface import api 
+import matplotlib.pyplot as plt
+
+#initialize the data
+api.initializStockData("DAL")
+api.initializStockData("UAL")
+
+#get the data from the past 30 trading days
+dataDAL = api.getHistoricalDataPast30TradingDays("DAL")
+dataUAL = api.getHistoricalDataPast30TradingDays("UAL")
+
+#only get the close data
+closeDataDAL = dataDAL['close']
+closeDataUAL = dataUAL["close"]
+
+#reverse the arrays since we get the data from most recent to least recent
+closeDataDAL.reverse()
+closeDataUAL.reverse()
+
+#plot  and show the data
+plt.plot(closeDataDAL)
+plt.plot(closeDataUAL)
+plt.show()
+ ```
+
+---
+
+# Dependencies
+urllib3, BeautifulSoup, lxml, html5lib, datetime
+
+---
 
 # Documentation
 

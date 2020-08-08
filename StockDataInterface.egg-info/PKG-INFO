@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: StockDataInterface
-Version: 1.1.4
+Version: 1.1.7
 Summary: An API for Yahoo Finance that collects current and historical stock data
 Home-page: https://github.com/nlatham1999/StockAPI
 Author: nick latham
@@ -14,7 +14,14 @@ Description: # Information
         Unlike other APIs that collect data from Yahoo Finance this API has built in easy to use functions to filter collected data.
         #Installation
         
-        ## Required Dependencies
+        # Installation
+        
+        ```shell
+        $ pip install StockDataInterface
+        ```
+        
+        # Dependencies
+        urllib3, BeautifulSoup, lxml, html5lib, datetime
         
         # Documentation
         

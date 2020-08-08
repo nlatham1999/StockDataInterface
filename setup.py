@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="StockDataInterface", 
-    version="1.1.4",
+    version="1.1.7",
     author="nick latham",
     author_email="nlatham@zagmail.gonzaga.edu",
     description="An API for Yahoo Finance that collects current and historical stock data",

@@ -563,6 +563,9 @@ def getHistoricalDataRangeTradingDays(sym, num1, num2):
         data["close"] = ohcl["close"][num1 : num2]
         data["low"] = ohcl["low"][num1 : num2]
         data["high"] = ohcl["high"][num1 : num2]
+        data["volume"] = ohcl["volume"][num1 : num2]
+        data["adjclose"] = ohcl["adjclose"][num1 : num2]
+        data["date"] = ohcl["date"][num1 : num2]
         return data
     except:
         return None
@@ -586,7 +589,6 @@ def getHistoricalDataRangeOfDates(sym, date1, date2):
     if(stock is None):
         return None
     dates = stock.OHCL["date"]
-    print(dates)
     try:
         d1 = dates.index(date1)
         d2 = dates.index(date2)
