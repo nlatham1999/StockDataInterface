@@ -10,6 +10,9 @@ import ast
 import json
 from datetime import datetime, timedelta
 
+def testFuntion():
+    print("test")
+
 class StockDataInterface:
 
     stocks = dict()

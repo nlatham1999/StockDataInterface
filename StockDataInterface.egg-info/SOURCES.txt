@@ -1,0 +1,8 @@
+README.md
+setup.py
+StockDataInterface/__init__.py
+StockDataInterface/api.py
+StockDataInterface.egg-info/PKG-INFO
+StockDataInterface.egg-info/SOURCES.txt
+StockDataInterface.egg-info/dependency_links.txt
+StockDataInterface.egg-info/top_level.txt

@@ -1,4 +1,4 @@
-from YahooFinanceAPI import StockDataInterface as api
+from StockDataInterface import api
 
 def unitTest(t, message, file):
     if(t is None):

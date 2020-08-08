@@ -1,12 +1,12 @@
 #a simple example of the api
 
-from YahooFinanceAPI import StockDataInterface as api
+from StockDataInterface import StockDataInterface as api
 import matplotlib.pyplot as plt  
 
 api.setDebugMode(True)
-api.initializStockData("BAC")
+api.initializStockData("AAPL")
 
-data = api.getHistoricalDataPast30TradingDays("BAC")
+data = api.getHistoricalDataPast30TradingDays("AAPL")
 closeData = data["close"]
 closeData.reverse()
 
