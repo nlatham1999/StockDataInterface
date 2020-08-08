@@ -7,6 +7,8 @@
 - [Dependencies](#Dependencies)
 - [Documentation](#Documentation)
 
+---
+
 # About
 
 A fast, easy API that retrieves stock data from Yahoo Finance.
