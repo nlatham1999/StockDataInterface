@@ -3,11 +3,11 @@
 
 - [About](#About)
 - [Installation](#Installation)
-- [Sample Code](#Sample Code)
+- [Examples](#Examples)
 - [Dependencies](#Dependencies)
 - [Documentation](#Documentation)
 
-# ABout
+# About
 
 A fast, easy API that retrieves stock data from Yahoo Finance.
 Data can be initialized by scraping data from yahoo finance or by reading from a json file saved by a previous session.
@@ -24,7 +24,9 @@ $ pip install StockDataInterface
 
 ---
 
-# Sample Code
+# Examples
+
+below are a couple code samples, for a complete list of funtions available consult the [documentation](#Documentation) 
 
  ```python
  #Nick Latham
